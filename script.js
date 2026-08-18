@@ -57,11 +57,23 @@ function openEditor(side, dataUrl, existing) {
 
 function fitEditorImage() {
   const frame = els.cropFrame;
-  const fw = frame.clientWidth, fh = frame.clientHeight;
-  const iw = editor.image.naturalWidth, ih = editor.image.naturalHeight;
-  editor.baseScale = Math.max(fw / iw, fh / ih);
+  const fw = frame.clientWidth;
+  const fh = frame.clientHeight;
+
+  const iw = editor.image.naturalWidth;
+  const ih = editor.image.naturalHeight;
+
+  // 显示完整照片，不要一开始就裁掉
+  editor.baseScale = Math.min(
+    fw / iw,
+    fh / ih
+  );
+
   editor.scale = 1;
-  editor.x = 0; editor.y = 0; editor.rotation = 0;
+  editor.x = 0;
+  editor.y = 0;
+  editor.rotation = 0;
+
   els.editorImage.src = editor.image.src;
 }
 
