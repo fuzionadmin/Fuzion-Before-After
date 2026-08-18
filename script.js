@@ -212,8 +212,7 @@ document.getElementById("downloadBtn").onclick = async () => {
   ctx.fillStyle="#27231f"; ctx.font="700 24px Arial";
   ctx.fillText("FUZION HAIR CARE", W/2, H-105);
   ctx.fillStyle="#81786f"; ctx.font="16px Arial";
-  ctx.fillText("PUSAT RAWATAN RAMBUT", W/2, H-75);
-  ctx.fillText(document.getElementById("companyInfo").textContent.trim(), W/2, H-48);
+  ctx.fillText(document.getElementById("companyInfo").textContent.trim(), W/2, H-75);
 
   const link = document.createElement("a");
   link.download = `Fuzion_Before_After_${(name || "Client").replace(/[^\w-]+/g,"_")}.jpg`;
