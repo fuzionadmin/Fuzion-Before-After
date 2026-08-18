@@ -190,49 +190,215 @@ document.getElementById("downloadBtn").onclick = async () => {
     alert("Please upload both Before and After photos first.");
     return;
   }
+
+  // ==============================
+  // HIGH RESOLUTION OUTPUT
+  // ==============================
   const canvas = document.createElement("canvas");
-  const W = 2400, H = 1850;
-  canvas.width = W; canvas.height = H;
+
+  const W = 2600;
+  const H = 2050;
+
+  canvas.width = W;
+  canvas.height = H;
+
   const ctx = canvas.getContext("2d");
 
-  ctx.fillStyle = "#f7f3ed"; ctx.fillRect(0,0,W,H);
+  // Background
+  ctx.fillStyle = "#f7f3ed";
+  ctx.fillRect(0, 0, W, H);
+
+  // ==============================
+  // LOGO
+  // ==============================
   const logo = document.getElementById("companyLogo");
-  let logoDrawn = false;
+
   if (logo && logo.complete && logo.naturalWidth) {
-    const maxW = 360, maxH = 120;
-    const r = Math.min(maxW/logo.naturalWidth, maxH/logo.naturalHeight, 1);
-    ctx.drawImage(logo, (W-logo.naturalWidth*r)/2, 65, logo.naturalWidth*r, logo.naturalHeight*r);
-    logoDrawn = true;
-  }
-  if (!logoDrawn) {
-    ctx.fillStyle="#27231f"; ctx.textAlign="center"; ctx.font="600 42px Arial";
-    ctx.fillText("FUZION HAIR CARE", W/2, 105);
+
+    // Logo is now larger
+    const maxW = 520;
+    const maxH = 170;
+
+    const ratio = Math.min(
+      maxW / logo.naturalWidth,
+      maxH / logo.naturalHeight
+    );
+
+    const logoW = logo.naturalWidth * ratio;
+    const logoH = logo.naturalHeight * ratio;
+
+    ctx.drawImage(
+      logo,
+      (W - logoW) / 2,
+      55,
+      logoW,
+      logoH
+    );
+
+  } else {
+
+    ctx.fillStyle = "#b08a2e";
+    ctx.textAlign = "center";
+    ctx.font = "700 62px Arial";
+
+    ctx.fillText(
+      "FUZION",
+      W / 2,
+      120
+    );
   }
 
-  ctx.fillStyle="#27231f"; ctx.textAlign="center"; ctx.font="500 46px Georgia";
-  ctx.fillText("BEFORE  &  AFTER", W/2, 190);
+  // ==============================
+  // HEADER
+  // ==============================
+
+  ctx.textAlign = "center";
+
+  ctx.fillStyle = "#27231f";
+
+  ctx.font = "600 58px Georgia";
+
+  ctx.fillText(
+    "BEFORE & AFTER",
+    W / 2,
+    235
+  );
+
+
+  // ==============================
+  // CLIENT NAME + ID
+  // ==============================
 
   const name = els.clientName.value.trim();
   const id = els.clientId.value.trim();
-  ctx.font="500 25px Arial"; ctx.fillStyle="#81786f";
-  ctx.fillText(`${name ? "Client: " + name : ""}${name && id ? "   •   " : ""}${id ? "ID: " + id : ""}`, W/2, 235);
 
-  const margin=90, gap=36, top=285, photoW=(W-margin*2-gap)/2, photoH=photoW*1.25;
-  await drawCover(ctx, state.before.dataUrl, margin, top, photoW, photoH);
-  await drawCover(ctx, state.after.dataUrl, margin+photoW+gap, top, photoW, photoH);
+  let clientText = "";
 
-  ctx.fillStyle="#9c8060"; ctx.font="700 23px Arial"; ctx.textAlign="center";
-  ctx.fillText("BEFORE", margin+photoW/2, top+photoH+42);
-  ctx.fillText("AFTER", margin+photoW+gap+photoW/2, top+photoH+42);
+  if (name) {
+    clientText += "Client: " + name;
+  }
 
-  ctx.fillStyle="#27231f"; ctx.font="700 24px Arial";
-  ctx.fillText("FUZION HAIR CARE", W/2, H-105);
-  ctx.fillStyle="#81786f"; ctx.font="16px Arial";
-  ctx.fillText(document.getElementById("companyInfo").textContent.trim(), W/2, H-65);
+  if (name && id) {
+    clientText += "     •     ";
+  }
+
+  if (id) {
+    clientText += "ID: " + id;
+  }
+
+  ctx.fillStyle = "#81786f";
+
+  ctx.font = "500 34px Arial";
+
+  ctx.fillText(
+    clientText,
+    W / 2,
+    290
+  );
+
+
+  // ==============================
+  // PHOTO POSITION
+  // ==============================
+
+  const margin = 90;
+
+  const gap = 40;
+
+  const top = 340;
+
+  const photoW =
+    (W - margin * 2 - gap) / 2;
+
+  const photoH =
+    photoW * 1.25;
+
+
+  // BEFORE
+  await drawCover(
+    ctx,
+    state.before.dataUrl,
+    margin,
+    top,
+    photoW,
+    photoH
+  );
+
+
+  // AFTER
+  await drawCover(
+    ctx,
+    state.after.dataUrl,
+    margin + photoW + gap,
+    top,
+    photoW,
+    photoH
+  );
+
+
+  // ==============================
+  // BEFORE / AFTER LABEL
+  // ==============================
+
+  ctx.fillStyle = "#9c8060";
+
+  ctx.font = "700 27px Arial";
+
+  ctx.textAlign = "center";
+
+  ctx.fillText(
+    "BEFORE",
+    margin + photoW / 2,
+    top + photoH + 48
+  );
+
+  ctx.fillText(
+    "AFTER",
+    margin + photoW + gap + photoW / 2,
+    top + photoH + 48
+  );
+
+
+  // ==============================
+  // FOOTER
+  // ==============================
+
+  ctx.fillStyle = "#27231f";
+
+  ctx.font = "700 30px Arial";
+
+  ctx.fillText(
+    "FUZION HAIR CARE",
+    W / 2,
+    H - 145
+  );
+
+
+  // Address + Phone
+  ctx.fillStyle = "#81786f";
+
+  ctx.font = "500 21px Arial";
+
+  ctx.fillText(
+    document.getElementById("companyInfo").textContent.trim(),
+    W / 2,
+    H - 100
+  );
+
+
+  // ==============================
+  // DOWNLOAD
+  // ==============================
 
   const link = document.createElement("a");
-  link.download = `Fuzion_Before_After_${(name || "Client").replace(/[^\w-]+/g,"_")}.jpg`;
-  link.href = canvas.toDataURL("image/jpeg", .96);
+
+  link.download =
+    `Fuzion_Before_After_${(name || "Client")
+      .replace(/[^\w-]+/g, "_")}.jpg`;
+
+  link.href =
+    canvas.toDataURL("image/jpeg", 0.98);
+
   link.click();
 };
 
