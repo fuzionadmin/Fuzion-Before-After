@@ -186,14 +186,16 @@ document.getElementById("clearBtn").onclick = () => {
 };
 
 document.getElementById("downloadBtn").onclick = async () => {
+
   if (!state.before.dataUrl || !state.after.dataUrl) {
     alert("Please upload both Before and After photos first.");
     return;
   }
 
-  // ==============================
-  // HIGH RESOLUTION OUTPUT
-  // ==============================
+  // =========================================
+  // HIGH RESOLUTION DOWNLOAD
+  // =========================================
+
   const canvas = document.createElement("canvas");
 
   const W = 2600;
@@ -208,28 +210,29 @@ document.getElementById("downloadBtn").onclick = async () => {
   ctx.fillStyle = "#f7f3ed";
   ctx.fillRect(0, 0, W, H);
 
-  // ==============================
-  // LOGO
-  // ==============================
+
+  // =========================================
+  // LOGO - TOP LEFT
+  // =========================================
+
   const logo = document.getElementById("companyLogo");
 
   if (logo && logo.complete && logo.naturalWidth) {
 
-    // Logo is now larger
-    const maxW = 520;
-    const maxH = 170;
+    const maxLogoW = 400;
+    const maxLogoH = 150;
 
-    const ratio = Math.min(
-      maxW / logo.naturalWidth,
-      maxH / logo.naturalHeight
+    const logoRatio = Math.min(
+      maxLogoW / logo.naturalWidth,
+      maxLogoH / logo.naturalHeight
     );
 
-    const logoW = logo.naturalWidth * ratio;
-    const logoH = logo.naturalHeight * ratio;
+    const logoW = logo.naturalWidth * logoRatio;
+    const logoH = logo.naturalHeight * logoRatio;
 
     ctx.drawImage(
       logo,
-      (W - logoW) / 2,
+      80,
       55,
       logoW,
       logoH
@@ -238,19 +241,20 @@ document.getElementById("downloadBtn").onclick = async () => {
   } else {
 
     ctx.fillStyle = "#b08a2e";
-    ctx.textAlign = "center";
+    ctx.textAlign = "left";
     ctx.font = "700 62px Arial";
 
     ctx.fillText(
       "FUZION",
-      W / 2,
-      120
+      80,
+      110
     );
   }
 
-  // ==============================
-  // HEADER
-  // ==============================
+
+  // =========================================
+  // HEADER - CENTER
+  // =========================================
 
   ctx.textAlign = "center";
 
@@ -261,13 +265,13 @@ document.getElementById("downloadBtn").onclick = async () => {
   ctx.fillText(
     "BEFORE & AFTER",
     W / 2,
-    235
+    115
   );
 
 
-  // ==============================
+  // =========================================
   // CLIENT NAME + ID
-  // ==============================
+  // =========================================
 
   const name = els.clientName.value.trim();
   const id = els.clientId.value.trim();
@@ -286,26 +290,28 @@ document.getElementById("downloadBtn").onclick = async () => {
     clientText += "ID: " + id;
   }
 
-  ctx.fillStyle = "#81786f";
+  ctx.fillStyle = "#5f574f";
 
-  ctx.font = "500 34px Arial";
+  // Larger client information
+  ctx.font = "600 40px Arial";
 
   ctx.fillText(
     clientText,
     W / 2,
-    290
+    180
   );
 
 
-  // ==============================
+  // =========================================
   // PHOTO POSITION
-  // ==============================
+  // =========================================
 
   const margin = 90;
 
   const gap = 40;
 
-  const top = 340;
+  // Photos moved lower
+  const top = 240;
 
   const photoW =
     (W - margin * 2 - gap) / 2;
@@ -314,7 +320,10 @@ document.getElementById("downloadBtn").onclick = async () => {
     photoW * 1.25;
 
 
-  // BEFORE
+  // =========================================
+  // BEFORE PHOTO
+  // =========================================
+
   await drawCover(
     ctx,
     state.before.dataUrl,
@@ -325,7 +334,10 @@ document.getElementById("downloadBtn").onclick = async () => {
   );
 
 
-  // AFTER
+  // =========================================
+  // AFTER PHOTO
+  // =========================================
+
   await drawCover(
     ctx,
     state.after.dataUrl,
@@ -336,68 +348,81 @@ document.getElementById("downloadBtn").onclick = async () => {
   );
 
 
-  // ==============================
+  // =========================================
   // BEFORE / AFTER LABEL
-  // ==============================
+  // =========================================
 
   ctx.fillStyle = "#9c8060";
 
-  ctx.font = "700 27px Arial";
+  ctx.font = "700 29px Arial";
 
   ctx.textAlign = "center";
 
   ctx.fillText(
     "BEFORE",
     margin + photoW / 2,
-    top + photoH + 48
+    top + photoH + 52
   );
 
   ctx.fillText(
     "AFTER",
     margin + photoW + gap + photoW / 2,
-    top + photoH + 48
+    top + photoH + 52
   );
 
 
-  // ==============================
+  // =========================================
   // FOOTER
-  // ==============================
+  // =========================================
 
+  ctx.textAlign = "center";
+
+  // Company name
   ctx.fillStyle = "#27231f";
 
-  ctx.font = "700 30px Arial";
+  ctx.font = "700 34px Arial";
 
   ctx.fillText(
     "FUZION HAIR CARE",
     W / 2,
-    H - 145
+    H - 135
   );
 
 
-  // Address + Phone
-  ctx.fillStyle = "#81786f";
+  // Address + phone
+  ctx.fillStyle = "#6f675f";
 
-  ctx.font = "500 21px Arial";
+  ctx.font = "600 25px Arial";
+
+  const companyInfo =
+    document
+      .getElementById("companyInfo")
+      .textContent
+      .trim();
 
   ctx.fillText(
-    document.getElementById("companyInfo").textContent.trim(),
+    companyInfo,
     W / 2,
-    H - 100
+    H - 88
   );
 
 
-  // ==============================
+  // =========================================
   // DOWNLOAD
-  // ==============================
+  // =========================================
 
   const link = document.createElement("a");
 
   link.download =
-    `Fuzion_Before_After_${(name || "Client")
-      .replace(/[^\w-]+/g, "_")}.jpg`;
+    `Fuzion_Before_After_${(
+      name || "Client"
+    ).replace(/[^\w-]+/g, "_")}.jpg`;
 
   link.href =
-    canvas.toDataURL("image/jpeg", 0.98);
+    canvas.toDataURL(
+      "image/jpeg",
+      0.98
+    );
 
   link.click();
 };
